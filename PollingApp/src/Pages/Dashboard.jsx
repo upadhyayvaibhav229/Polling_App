@@ -1,8 +1,19 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../Components/Navbar';
 
 const Dashboard = () => {
-  const userName = localStorage.getItem('pollUserName') || "Guest";
+  const [userName, setUsername] = useState('');
+
+  useEffect(() => {
+    const name = localStorage.getItem('PollUserName');
+
+    if (name) {
+      setUsername(name);
+    } else {
+      console.warn("No name found in localStorage");
+    }
+  }, []);
+
 
   const dummyPolls = [
     {
@@ -21,8 +32,8 @@ const Dashboard = () => {
     <>
       <Navbar />
       <div className="max-w-5xl mx-auto px-4 py-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
-          Hi, {userName} 👋
+        <h2 className="text-2xl font-bold mb-4 text-white">
+          Hi, <span className='text-red-400'>{userName}</span> 👋
         </h2>
 
         <div className="flex justify-between items-center mb-6">
