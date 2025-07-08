@@ -46,7 +46,7 @@ const Home = () => {
                                     placeholder="Enter your name"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
-                                    className="flex-1 px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
+                                    className="flex-1 px-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white"
                                     required
                                 />
                                 <button
