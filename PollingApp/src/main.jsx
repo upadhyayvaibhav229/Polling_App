@@ -20,6 +20,7 @@ import CreatePoll from './Pages/CreatePoll.jsx';
 import PollQuestion from './Pages/PollQuestion.jsx';
 import PollResult from './Pages/PollResult.jsx';
 import ExplorePolls from './Pages/ExplorePolls.jsx';
+import EditPoll from './Pages/EditPage.jsx';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -64,6 +65,14 @@ const router = createBrowserRouter(
         element={
           <PrivateRoute>
             <CreatePoll />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path='/edit-poll'
+        element={
+          <PrivateRoute>
+            <EditPoll />
           </PrivateRoute>
         }
       />

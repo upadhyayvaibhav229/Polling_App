@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { act } from "react";
 const savedPolls = JSON.parse(localStorage.getItem('polls')) || [];
 
 const initialState = {
@@ -12,10 +13,23 @@ const pollSlice = createSlice({
         addPoll: (state, action) => {
             state.polls.push(action.payload);
             console.log(state.polls);
-            
+
             localStorage.setItem('polls', JSON.stringify(state.polls));
 
         },
+        deletePoll: (state, action) => {
+            state.polls = state.polls.filter(poll => poll.id !== action.payload);
+            localStorage.setItem('polls', JSON.stringify(state.polls));
+        },
+
+        updatePoll: (state, action) => {
+            const index = state.polls.findIndex(p => p.id === action.payload.id);
+            if (index !== -1) {
+                state.polls[index] = action.payload;
+                localStorage.setItem('polls', JSON.stringify(state.polls));
+            }
+        },
+
         votePoll: (state, action) => {
             const { pollId, selectedOption } = action.payload;
             const poll = state.polls.find((p) => String(p.id) === String(pollId));
@@ -31,5 +45,5 @@ const pollSlice = createSlice({
     },
 });
 
-export const { addPoll, votePoll } = pollSlice.actions;
+export const { addPoll, deletePoll, updatePoll, votePoll } = pollSlice.actions;
 export default pollSlice.reducer;
