@@ -36,21 +36,24 @@ const CreatePoll = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-8 px-4 sm:px-6 lg:px-8">
-      <div className="bg-white shadow-md rounded-lg p-6 sm:p-8">
-        <h2 className="text-xl sm:text-2xl font-semibold mb-6 text-gray-800">
+    <div className="min-h-screen  flex items-center justify-center px-4 py-8">
+      <div className="w-full max-w-2xl bg-white shadow-lg rounded-lg p-6 sm:p-8">
+        <h2 className="text-2xl sm:text-3xl font-semibold mb-6 text-gray-800 text-center">
           Create a Poll
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Question Input */}
           <input
             type="text"
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
             placeholder="Enter your poll question"
-            className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
             required
           />
 
+          {/* Options Input Fields */}
           {options.map((opt, index) => (
             <input
               key={index}
@@ -58,24 +61,28 @@ const CreatePoll = () => {
               value={opt}
               onChange={(e) => handleOptionChange(e.target.value, index)}
               placeholder={`Option ${index + 1}`}
-              className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full border border-gray-300 p-3 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             />
           ))}
 
+          {/* Add Option Button */}
           {options.length < 6 && (
-            <button
-              type="button"
-              onClick={addOption}
-              className="text-sm text-blue-600 hover:underline"
-            >
-              + Add Option
-            </button>
+            <div className="text-right">
+              <button
+                type="button"
+                onClick={addOption}
+                className="text-sm text-blue-600 hover:underline"
+              >
+                + Add Option
+              </button>
+            </div>
           )}
 
+          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-2 rounded-md hover:bg-indigo-700 transition-colors"
+            className="w-full bg-indigo-600 text-white py-3 rounded-md hover:bg-indigo-700 transition-colors text-lg font-medium"
           >
             Create Poll
           </button>
