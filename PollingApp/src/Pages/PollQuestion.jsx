@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { votePoll } from '../Features/PollSlice';
@@ -13,10 +13,31 @@ const PollQuestion = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const savedVote = localStorage.getItem(`poll-${id}`);
+        if (savedVote) {
+            setSelectedOption(savedVote);
+        }
+    }, [id]);
+
     if (!poll) return <div className="text-white p-6">Poll not found.</div>;
 
     const handleRadioChange = (value) => {
         setSelectedOption(value);
+    };
+
+    const handleVote = () => {
+        if (!selectedOption) return;
+
+        const alreadyVoted = localStorage.getItem(`poll-${id}`);
+        if (alreadyVoted === selectedOption) {
+            alert("You already voted for this option.");
+            return;
+        }
+
+        dispatch(votePoll({ pollId: poll.id, selectedOption }));
+        localStorage.setItem(`poll-${id}`, selectedOption);
+        navigate(`/poll/${poll.id}/result`);
     };
 
     return (
@@ -65,11 +86,7 @@ const PollQuestion = () => {
                 <div className="button flex mt-7 space-x-5">
                     <button
                         type="button"
-                        onClick={() => {
-                            if (!selectedOption) return;
-                            dispatch(votePoll({ pollId: poll.id, selectedOption }));
-                            navigate(`/poll/${poll.id}/result`);
-                        }}
+                        onClick={handleVote}
                         className="flex bg-indigo-700 px-6 py-3 rounded-md cursor-pointer"
                     >
                         Vote
