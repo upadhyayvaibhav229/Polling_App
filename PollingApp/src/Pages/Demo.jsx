@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Demo = () => {
   const [selectedOption, setSelectedOption] = useState('');
@@ -12,37 +12,58 @@ const Demo = () => {
     { option: 'Very Difficult', votes: 0 },
   ]);
 
+  const pollId = 'demoPoll-1'; // unique poll ID for tracking
   const totalVotes = options.reduce((sum, opt) => sum + opt.votes, 0);
+
+  useEffect(() => {
+    const voted = localStorage.getItem(pollId);
+    if (voted) {
+      setSelectedOption(voted);
+      setHasVoted(true);
+    }
+  }, []);
 
   const handleRadioChange = (value) => {
     setSelectedOption(value);
   };
 
   const handleVote = () => {
-    if (!selectedOption || hasVoted) return;
-    const updatedOptions = options.map((opt) =>
-      opt.option === selectedOption
-        ? { ...opt, votes: opt.votes + 1 }
-        : opt
-    );
+    if (!selectedOption) return;
+
+    const alreadyVoted = localStorage.getItem(pollId);
+    if (alreadyVoted === selectedOption) {
+      alert("You have already voted for this option.");
+      return ;
+    }
+
+    // if voted different option before, remove a vote from it
+    const updatedOptions = options.map((opt) => {
+      if (opt.option === selectedOption) {
+        return { ...opt, votes: opt.votes + 1 };
+      } else if (opt.option === alreadyVoted) {
+        return { ...opt, votes: Math.max(0, opt.votes - 1) };
+      }
+      return opt;
+    });
 
     setOptions(updatedOptions);
     setHasVoted(true);
+    localStorage.setItem(pollId, selectedOption);
   };
 
   return (
-    <div className="mt-10 px-4 sm:px-6 lg:px-8 text-white flex flex-col justify-center items-center">
-      <div className="space-y-5 max-w-2xl text-center">
-        <h1 className="text-gray-300 text-3xl sm:text-4xl font-extrabold">
+    <div className="mt-10 space-y-8 text-white flex flex-col justify-center items-center">
+      <div className="space-y-5">
+        <h1 className="text-gray-300 text-4xl font-extrabold text-center">
           Real-Time Polling
         </h1>
-        <p className="text-slate-500">
+        <p className="text-slate-500 text-center">
           This is a demo poll. Select an option and click Vote to see live results.
         </p>
       </div>
 
-      <div className="mt-8 w-full max-w-2xl p-6 sm:p-8 bg-[#1F2937] shadow-lg rounded-md border-t-4 border-blue-900">
-        <h1 className="text-xl sm:text-2xl font-bold mb-4">
+      <div className="border-t-4 border-t-blue-900 w-[720px] h-auto p-10 bg-[#1F2937] shadow-lg">
+        <h1 className="text-2xl font-bold mb-4">
           How easy is it to embed a StrawPoll?
         </h1>
 
@@ -51,7 +72,7 @@ const Demo = () => {
 
           return (
             <div key={index} className="mb-4">
-              <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center text-sm mb-1 space-y-1 sm:space-y-0">
+              <div className="flex justify-between items-center text-white text-sm mb-1">
                 <label htmlFor={opt.option} className="flex items-center cursor-pointer space-x-2">
                   <input
                     type="radio"
@@ -61,7 +82,6 @@ const Demo = () => {
                     checked={selectedOption === opt.option}
                     onChange={() => handleRadioChange(opt.option)}
                     className="accent-indigo-500"
-                    disabled={hasVoted}
                   />
                   <span>{opt.option}</span>
                 </label>
@@ -79,15 +99,14 @@ const Demo = () => {
           );
         })}
 
-        <div className="flex justify-center mt-7">
+        <div className="button flex mt-7 space-x-5">
           <button
             type="button"
             onClick={handleVote}
-            className="flex items-center bg-indigo-700 px-6 py-3 rounded-md hover:bg-indigo-800 transition"
-            disabled={hasVoted}
+            className="flex bg-indigo-700 px-6 py-3 rounded-md cursor-pointer"
           >
             Vote
-            <svg className="h-5 w-5 ml-2" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="h-5 w-5 ml-2 mt-1" fill="currentColor" viewBox="0 0 20 20">
               <path d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" />
             </svg>
           </button>
@@ -98,4 +117,3 @@ const Demo = () => {
 };
 
 export default Demo;
-
